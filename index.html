@@ -65,7 +65,26 @@ _spikeLifecycle.onHide({ stub: true })</pre>
             <h2>Tiles</h2>
             <div class="tiles">
                 <estreuv-dark-mode-tile></estreuv-dark-mode-tile>
+                <!-- F3 검증: long-form HTML attribute (text · color) 가 reactive property 까지 흐르는지 -->
+                <estreuv-dark-mode-tile text="테마" color="#7a4dff"></estreuv-dark-mode-tile>
                 <!-- Phase C 에서 tile 2종 추가 예정: 시계, 알림 카운트 -->
+            </div>
+
+            <div class="scenario-note" style="margin-top: 24px;">
+                <p><strong>Phase B 콘솔 검증 명령</strong>:</p>
+                <pre>// (1) F3 — Alienese alias JS 식별자
+const t = document.querySelectorAll('estreuv-dark-mode-tile')[1];
+t['*t'] = 'AI 테마'      // long-form text 와 동일 reactive prop
+t['*c'] = 'tomato'       // long-form color 와 동일
+
+// (2) Lifecycle race — 같은 hook 두 번 호출 시 dedup
+_spikeLifecycle.onShow({ stub: true })
+_spikeLifecycle.onShow({ stub: true })  // → "re-entrant ... skipped" 경고
+
+// (3) 카운터 검증
+document.querySelector('estreuv-dark-mode-tile')._estreuvLifecycleCounts
+document.querySelector('estreuv-dark-mode-tile').getLifecycleHistory()
+document.querySelector('estreuv-dark-mode-tile').hasLifecycleFired('onShow')</pre>
             </div>
         </div>
 

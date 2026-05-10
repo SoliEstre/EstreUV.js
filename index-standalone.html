@@ -45,7 +45,11 @@
         </div>
 
         <h2>Tile (단독 사용)</h2>
-        <estreuv-dark-mode-tile></estreuv-dark-mode-tile>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <estreuv-dark-mode-tile></estreuv-dark-mode-tile>
+            <!-- F3: long-form HTML attribute 검증 -->
+            <estreuv-dark-mode-tile text="테마" color="#2a8"></estreuv-dark-mode-tile>
+        </div>
     </main>
 
     <script type="importmap">

@@ -4,7 +4,7 @@
 >
 > **상위 기획**: EstreUI.js common workspace 의 [reports/2026-05-09-estreuv-positioning.md](../../../WorkSolutions/Dev/op%20server/EstreUI.js%20common%20workspace/reports/2026-05-09-estreuv-positioning.md) v1.1 + [PM 007](../../../WorkSolutions/Dev/op%20server/EstreUI.js%20common%20workspace/.agent/PM/007_estreuv_spike.md)
 >
-> **시작**: 2026-05-09. **ETA**: 약 2026-05-30 (3주)
+> **시작**: 2026-05-09. **ETA**: 2026-05-15~20 (5~7일, 5~6배 AI 바이브 코딩 속도 가정 반영 후)
 
 ## 목적
 
@@ -30,33 +30,42 @@ EstreUV (LIT 기반 micro-Rimwork, EstreUI 의 jQuery-class primitive ↔ LIT-cl
 - **I2**: 외부 의존 Lit core 한정 (lit-html · lit-element · @lit/reactive-element · @lit/context). Lit Labs 의존 없음
 - **I3**: 번들 사이즈 (minified+gzip) < 15KB
 
-## 디렉터리 구조 (Phase A 1차)
+## 디렉터리 구조 (Phase B 강화 후)
 
 ```
 EstreUV-spike/
 ├── README.md           — 본 파일
 ├── package.json        — 의존: lit + @lit/context (peer 없음)
-├── index.html          — 브라우저 entry (no-build)
+├── index.html          — 브라우저 entry (no-build, bridge 시나리오)
 ├── index-standalone.html — F2 검증용 단독 페이지 (EstreUI 없이)
 └── src/
     ├── main.js                — 부트 + intent context provide + tile 마운트
     ├── intent-context.js      — @lit/context 로 EstreUI ↔ EstreUV intent 브릿지
-    ├── estreuv-element.js     — EstreUVElement 베이스 클래스
-    ├── lifecycle-bridge.js    — onBring/onShow/onFocus/onHide/onClose 매핑 helper
-    └── dark-mode-tile.js      — 첫 tile 컴포넌트 (다크 모드 토글, EstreUV 변환)
+    ├── estreuv-element.js     — EstreUVElement 베이스 + lifecycle 헬퍼
+    ├── lifecycle-bridge.js    — 8 라이프사이클 dispatch + 순서 invariant + per-tick dedup
+    ├── alienese-alias.js      — *t/*bg/*c → long-form → reactive property (Phase B)
+    └── dark-mode-tile.js      — 첫 tile 컴포넌트 (다크 모드 토글)
 ```
 
-## Phase A 진척 (Week 1)
+## Phase A 진척 (완료, 2026-05-09)
 
-- [x] 폴더 셋업 + 초기 scaffold (2026-05-09)
-- [x] `intent-context.js` minimal — `@lit/context` 기반 1차안
-- [x] `estreuv-element.js` minimal — `LitElement` 베이스 + intent consume
-- [x] `lifecycle-bridge.js` minimal — 5 라이프사이클 매핑 placeholder
-- [x] `dark-mode-tile.js` — 다크 모드 토글 tile EstreUV 변환 1차
+- [x] 폴더 셋업 + 초기 scaffold
+- [x] `intent-context.js` — `@lit/context` 기반
+- [x] `estreuv-element.js` — `LitElement` 베이스 + intent consume
+- [x] `lifecycle-bridge.js` — 8 라이프사이클 매핑 (Phase B 강화 전 5 → 8)
+- [x] `dark-mode-tile.js` — 다크 모드 토글 tile EstreUV 변환
 - [x] `index.html` + `index-standalone.html` — bridge / standalone 두 시나리오
-- [ ] `npm install` + 브라우저 검증 (사용자 영역, 다음 세션)
-- [ ] EstreUI article 안에서 intent 변경 시 tile 자동 재렌더 검증 (F2 부분)
-- [ ] tile 단독 페이지에서 작동 검증 (F2 완전)
+- [x] EstreUI 본체 fw `spike-test/` 환경에서 본 검증 PASS (F1 + F2 + dual binding 회피)
+
+## Phase B 진척 (2026-05-09)
+
+- [x] **lifecycle race 정밀**: per-tick dedup (`_inFlight` WeakMap), 순서 invariant 경고 (non-cyclic), 컴포넌트별 `_estreuvLifecycleCounts` + `getLifecycleHistory()`
+- [x] **Lit ↔ EstreUI 채널 분리** 정책 명문화 (estreuv-element.js JSDoc)
+- [x] **dual binding 컨벤션 강화**: child 가 `intent` 직접 mutate 금지 명문화 (read-only from child), `requestIntentUpdate(patch)` 위임
+- [x] **Alienese alias 시스템 베이스**: `alienese-alias.js` — `applyAliases(ctor)` Spectrum SpectrumMixin 패턴 차용. 기본 alias 셋 (`*t` `*bg` `*c` `*sz` `*on` `*ic`)
+- [x] **HTML attribute 명명 규칙**: long-form (`text`/`color`) 또는 `e-*` prefix. JS 식별자 (`tile['*t']`) 만 Alienese form
+- [x] dark-mode-tile.js 가 alias 시스템 사용 (F3 demo)
+- [ ] 브라우저 검증 (사용자 영역, 다음 단계)
 
 ## 실행 방법
 
@@ -68,11 +77,14 @@ npx http-server .   # 또는 `npx serve` · Python `python -m http.server` · VS
 #               http://localhost:8080/index-standalone.html (단독 시나리오) 확인
 ```
 
-## 다음 단계 (Phase A 마무리 → Phase B)
+## 다음 단계 (Phase C)
 
-1. EstreUI 본체 안에 article 셋업 + spike 의 tile component import → intent 변경 시 tile 자동 재렌더 시각 확인
-2. lifecycle bridge 의 `onShow/onHide` 가 race 없이 1 회 호출되는지 콘솔 로깅 검증
-3. Phase B 진입 시 dual binding race 회피 컨벤션 (event-up + prop-down) 검증 + Alienese alias mapping 베이스 추가
+1. tile 추가 2 종 (시계 · 알림 카운트) — 다양한 reactivity 패턴 일반화 검증
+2. Notelle 사이드바 prototype 1 개 — nested 컨테이너 케이스 (중첩 lifecycle)
+3. DX 측정 (D1 LoC · D2 OS shell 마이그레이션 · D4 IDE intellisense)
+4. Vitest + happy-dom 테스트 셋업 (D5)
+5. 번들 사이즈 측정 (I1 · I3) — minified+gzip < 15KB 검증
+6. `reports/YYYY-MM-DD-estreuv-spike-result.md` 작성 + 옵션 A/B/C 분기 권고
 
 ## 결과 보고
 

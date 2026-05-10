@@ -1,23 +1,26 @@
 /**
- * EstreUV — Lifecycle Bridge (Phase A 1차안)
+ * EstreUV — Lifecycle Bridge (Phase B 강화)
  *
- * EstreUI article lifecycle (onBring/onShow/onFocus/onHide/onClose) 을
- * 자식 EstreUV component 의 동명 메서드로 매핑. Vaadin Router 의 duck-typing
- * 패턴 차용 (https://vaadin.com/docs/latest/hilla/lit/guides/routing).
+ * EstreUI article lifecycle (onBring/onOpen/onShow/onFocus/onBlur/onHide/onClose/onRelease) 를
+ * 자식 EstreUV component 의 동명 메서드로 매핑. Vaadin Router 의 duck-typing 패턴 차용.
  *
- * 설계 의도:
- * - article 이 lifecycle 호출을 받을 때 자식 EstreUV component 들의 같은 메서드를
- *   순차 호출. component 가 메서드를 정의하지 않으면 무시 (duck-typing, 강제 X).
- * - Lit native lifecycle (connectedCallback/disconnectedCallback) 과 분리 운영 —
- *   브라우저가 native, EstreUI 가 EstreUV custom lifecycle 트리거.
- * - race 회피: 같은 lifecycle 이 한 번만 호출되도록 Set 으로 dedup.
+ * Phase A → Phase B 변경:
+ * - per-call 동기 dedup (같은 synchronous tick 안에서 같은 hookName 이 같은 component 에 두 번
+ *   dispatch 되는 race 차단)
+ * - 부분 lifecycle 순서 invariant 검사 (onBring < onOpen < onShow ... onClose < onRelease;
+ *   cyclic hook 인 onShow/onFocus/onBlur/onHide 는 재진입 허용)
+ * - 컴포넌트별 lifecycle history (디버그) — `getLifecycleHistory(comp)`
+ * - 컴포넌트별 hook 호출 카운터 — `comp._estreuvLifecycleCounts`
  *
- * 미해결 (Phase B 에서):
- * - lifecycle hook 의 인자 시그니처 (현 EstreUI page-handlers.ko.md 와 매핑)
- *   - onFocus(handle, isFirstFocus) / onBlur(handle, isFinalBlur) 의 isFirstFocus / isFinalBlur
- *     를 EstreUV component 에서 어떻게 받을지
- * - cleanup 시점 — onClose 에서 모든 subscriber 해제 보장 컨벤션
- * - error propagation — component 의 lifecycle 메서드가 throw 시 article 에 전파 vs 흡수
+ * 설계 원칙 (Phase B 명문화):
+ * - Lit native lifecycle (`connectedCallback` 등) 과 EstreUI lifecycle 은 **완전 분리 채널**.
+ *   브라우저가 native, EstreUI 는 article 흐름이 dispatch. 두 채널은 서로 호출하지 않는다.
+ * - dual binding race 회피: child component 는 `intent` 를 직접 mutate 하지 않고
+ *   `requestIntentUpdate(patch)` 로 owner article 에 위임 (event-up · prop-down).
+ *
+ * 미해결 (Phase C 에서):
+ * - error propagation 정책 (현재 흡수 + 콘솔 경고). retry/escalate 옵션
+ * - lifecycle hook async 지원 (현재는 동기만)
  */
 
 /**
@@ -36,6 +39,75 @@ export const ESTREUI_LIFECYCLE_NAMES = Object.freeze([
 ]);
 
 /**
+ * 부분 순서 인덱스 — 작은 인덱스가 먼저 발생해야 함.
+ * cyclic hook (재진입 허용) 은 별도로 표시.
+ */
+const LIFECYCLE_ORDER_INDEX = ESTREUI_LIFECYCLE_NAMES.reduce((acc, name, i) => {
+    acc[name] = i;
+    return acc;
+}, Object.create(null));
+
+const CYCLIC_HOOKS = new Set(['onShow', 'onFocus', 'onBlur', 'onHide']);
+
+/** WeakMap<HTMLElement, Array<{hook, t}>> — 컴포넌트별 호출 이력 (bounded 32) */
+const _lifecycleHistory = new WeakMap();
+
+/**
+ * Per-articleRoot synchronous in-flight set.
+ * dispatchLifecycle 가 같은 tick 안에서 같은 (root, hook) 페어로 두 번 호출되면 차단.
+ * 마이크로태스크 끝에 자동 클리어.
+ *
+ * @type {WeakMap<HTMLElement, Set<string>>}
+ */
+const _inFlight = new WeakMap();
+
+function _getInFlight(root) {
+    let s = _inFlight.get(root);
+    if (!s) {
+        s = new Set();
+        _inFlight.set(root, s);
+    }
+    return s;
+}
+
+function _recordCall(comp, hookName) {
+    // history
+    let h = _lifecycleHistory.get(comp);
+    if (!h) {
+        h = [];
+        _lifecycleHistory.set(comp, h);
+    }
+    const last = h[h.length - 1];
+    h.push({ hook: hookName, t: performance.now() });
+    if (h.length > 32) h.shift();
+
+    // counter on element (편의 — 디버그·검증)
+    if (!comp._estreuvLifecycleCounts) comp._estreuvLifecycleCounts = Object.create(null);
+    comp._estreuvLifecycleCounts[hookName] = (comp._estreuvLifecycleCounts[hookName] || 0) + 1;
+
+    // 순서 invariant 경고 (non-cyclic 만)
+    if (last && !CYCLIC_HOOKS.has(hookName)) {
+        const lastIdx = LIFECYCLE_ORDER_INDEX[last.hook];
+        const currIdx = LIFECYCLE_ORDER_INDEX[hookName];
+        if (currIdx < lastIdx) {
+            console.warn(
+                `[EstreUV] Lifecycle order violation on <${comp.tagName.toLowerCase()}>: ` +
+                `${last.hook} → ${hookName} (expected non-decreasing)`
+            );
+        }
+    }
+}
+
+/**
+ * 디버그 / 테스트용 — 컴포넌트의 lifecycle 호출 이력 조회.
+ * @param {HTMLElement} comp
+ * @returns {Array<{hook: string, t: number}>}
+ */
+export function getLifecycleHistory(comp) {
+    return _lifecycleHistory.get(comp)?.slice() ?? [];
+}
+
+/**
  * article root 안의 모든 EstreUV component 를 찾아 lifecycle 호출 dispatch.
  * EstreUI article 의 핸들러가 호출하는 진입점.
  *
@@ -48,14 +120,25 @@ export function dispatchLifecycle(articleRoot, hookName, ...args) {
         console.warn(`[EstreUV] Unknown lifecycle: ${hookName}`);
         return;
     }
-    // 자식 EstreUV component 모두 — `data-estreuv` attribute 또는 EstreUVElement 인스턴스로 식별
+
+    // per-call 동기 dedup — 같은 (root, hook) 으로 동일 tick 두번 호출 차단
+    const inFlight = _getInFlight(articleRoot);
+    if (inFlight.has(hookName)) {
+        console.warn(
+            `[EstreUV] dispatchLifecycle('${hookName}') re-entrant on same root within tick — skipped`
+        );
+        return;
+    }
+    inFlight.add(hookName);
+    queueMicrotask(() => inFlight.delete(hookName));
+
     const components = articleRoot.querySelectorAll('[data-estreuv]');
     components.forEach((comp) => {
+        _recordCall(comp, hookName);
         if (typeof comp[hookName] === 'function') {
             try {
                 comp[hookName](...args);
             } catch (err) {
-                // Phase A: 흡수 + 콘솔 경고. Phase B 에서 에러 전파 정책 결정
                 console.error(`[EstreUV] ${comp.tagName} ${hookName} threw:`, err);
             }
         }
@@ -75,8 +158,6 @@ export function dispatchLifecycle(articleRoot, hookName, ...args) {
  *       }
  *       // ... 다른 lifecycle 동일
  *   }
- *
- * Phase B 에서 EstreUI 본체에 helper 직접 통합 가능 (estreui-uv-bridge npm subpath).
  *
  * @param {HTMLElement} articleRoot
  * @returns {Object<string, (...args: any[]) => void>} — lifecycle 이름별 dispatcher

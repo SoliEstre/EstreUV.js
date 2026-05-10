@@ -1,30 +1,48 @@
 /**
- * EstreUV — Dark Mode Tile (Phase A 첫 tile 컴포넌트)
+ * EstreUV — Dark Mode Tile (Phase B 강화)
  *
  * EstreUI v1.3.0 의 overwatchPanel 안 다크 모드 토글 tile 을 EstreUV 컴포넌트로 변환.
  *
+ * Phase A → Phase B 변경:
+ * - Alienese alias 시스템 적용 (`*t` → `text` · `*c` → `color`) 으로 F3 부분 검증
+ * - lifecycle race 검증을 위한 hook count 노출
+ *
  * 검증 목표:
- * - F2 부분: EstreUI 없이도 단독 페이지에서 작동 (글로벌 darkMode API 가 없으면
- *   localStorage 직접 사용으로 fallback)
+ * - F2: EstreUI 없이 단독 페이지에서도 작동 (Phase A 통과)
+ * - F3: Alienese 단축 attribute 가 long-form → reactive property → 렌더 반영 작동, 빌드 단계 0
  * - D1: raw Lit 동등 구현 대비 LoC 비교 base
  *
- * 미구현 (Phase B 에서):
+ * 미구현 (Phase C 에서):
  * - EstreUI 와 함께 사용 시 estreUi.cycleDarkMode() 호출 (현재는 직접 토글)
  * - intent 에서 darkMode 상태 읽기 (현재는 컴포넌트가 직접 localStorage 관리)
- * - Alienese 단축 attribute 적용 (`*bg` 등)
  */
 
 import { html, css } from 'lit';
 import { EstreUVElement } from './estreuv-element.js';
+import { applyAliases } from './alienese-alias.js';
 
 const STORAGE_KEY = 'estreuv-spike.darkMode';
 
 export class DarkModeTile extends EstreUVElement {
 
+    /**
+     * Alienese alias 선언.
+     * - `*t`  → `text`   (label override)
+     * - `*c`  → `color`  (icon/border color)
+     * 마크업: `<estreuv-dark-mode-tile text="테마" color="purple">` 또는
+     *         `<estreuv-dark-mode-tile data-dark-mode-state="auto">` 등.
+     * JS:     tile['*t'] = '테마'   → tile.text = '테마'
+     */
+    static aliases = {
+        '*t': 'text',
+        '*c': 'color',
+    };
+
     static properties = {
         ...EstreUVElement.properties,
         /** 'auto' | 'light' | 'dark' */
         state: { type: String, reflect: true, attribute: 'data-dark-mode-state' },
+        // text · color 는 applyAliases() 가 자동 추가
     };
 
     static styles = css`
@@ -34,12 +52,13 @@ export class DarkModeTile extends EstreUVElement {
             align-items: center;
             gap: 4px;
             padding: 8px 12px;
-            border: 1px solid currentColor;
+            border: 1px solid var(--estreuv-tile-color, currentColor);
             border-radius: 8px;
             cursor: pointer;
             user-select: none;
             min-width: 64px;
             font-family: system-ui, sans-serif;
+            color: var(--estreuv-tile-color, inherit);
         }
         :host(:hover) {
             opacity: 0.85;
@@ -72,11 +91,9 @@ export class DarkModeTile extends EstreUVElement {
     _applyToBody() {
         const isDark = this._effectiveIsDark();
         if (typeof window.estreUi?.setDarkMode === 'function') {
-            // EstreUI 와 함께 사용 — 본체 API 위임 (Phase B 에서 강화)
             const value = this.state === 'auto' ? null : (this.state === 'dark');
             window.estreUi.setDarkMode(value);
         } else {
-            // 단독 사용 — body[data-dark-mode] 직접 설정 (F2 검증 경로)
             document.body.toggleAttribute('data-dark-mode', isDark);
         }
     }
@@ -96,15 +113,17 @@ export class DarkModeTile extends EstreUVElement {
         else if (next === 'light') localStorage.setItem(STORAGE_KEY, '0');
         else localStorage.removeItem(STORAGE_KEY);
         this._applyToBody();
-        // intent 변경도 위임 (article 이 받아서 처리 가능)
         this.requestIntentUpdate({ darkMode: next });
     }
 
     render() {
         const icon = this.state === 'dark' ? '☾' : this.state === 'light' ? '☀' : '🌓';
+        // Alienese alias 검증: text · color 가 long-form HTML attribute 또는 *t · *c 로 들어옴
+        const labelText = this.text || this.state;
+        const colorStyle = this.color ? `--estreuv-tile-color: ${this.color}` : '';
         return html`
-            <div class="icon" aria-hidden="true">${icon}</div>
-            <div class="label">${this.state}</div>
+            <div class="icon" aria-hidden="true" style="${colorStyle}">${icon}</div>
+            <div class="label" style="${colorStyle}">${labelText}</div>
         `;
     }
 
@@ -112,11 +131,8 @@ export class DarkModeTile extends EstreUVElement {
         this.addEventListener('click', () => this.cycle());
     }
 
-    // ─── EstreUI 라이프사이클 override 예시 (Phase B 에서 검증) ──────────
-
     onShow(handle) {
         super.onShow(handle);
-        // 다른 디바이스에서 변경된 darkMode 가 있을 수 있으므로 재로드
         const saved = this._loadInitial();
         if (saved !== this.state) {
             this.state = saved;
@@ -124,5 +140,8 @@ export class DarkModeTile extends EstreUVElement {
         }
     }
 }
+
+// alias install (Lit finalize 이전에 적용되도록 customElements.define 직전 호출)
+applyAliases(DarkModeTile);
 
 customElements.define('estreuv-dark-mode-tile', DarkModeTile);
