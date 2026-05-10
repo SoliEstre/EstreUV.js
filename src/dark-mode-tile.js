@@ -116,14 +116,29 @@ export class DarkModeTile extends EstreUVElement {
         this.requestIntentUpdate({ darkMode: next });
     }
 
+    /**
+     * color reactive prop 변경 시 host element 의 CSS custom property 갱신.
+     * inner div style 에 박아도 :host 의 border-color 는 cascade 못 받으므로 host 직접 set.
+     */
+    willUpdate(changedProperties) {
+        super.willUpdate?.(changedProperties);
+        if (changedProperties.has('color')) {
+            if (this.color) {
+                this.style.setProperty('--estreuv-tile-color', this.color);
+            } else {
+                this.style.removeProperty('--estreuv-tile-color');
+            }
+        }
+    }
+
     render() {
         const icon = this.state === 'dark' ? '☾' : this.state === 'light' ? '☀' : '🌓';
-        // Alienese alias 검증: text · color 가 long-form HTML attribute 또는 *t · *c 로 들어옴
+        // Alienese alias 검증: text · color 가 long-form HTML attribute 또는 *t · *c 로 들어옴.
+        // color 의 시각 적용은 willUpdate 가 host 의 --estreuv-tile-color 갱신.
         const labelText = this.text || this.state;
-        const colorStyle = this.color ? `--estreuv-tile-color: ${this.color}` : '';
         return html`
-            <div class="icon" aria-hidden="true" style="${colorStyle}">${icon}</div>
-            <div class="label" style="${colorStyle}">${labelText}</div>
+            <div class="icon" aria-hidden="true">${icon}</div>
+            <div class="label">${labelText}</div>
         `;
     }
 
