@@ -13,6 +13,10 @@
  *   long-form (`text` · `background`) 또는 `e-` prefix (`e-t` · `e-bg`) 를 사용. Alienese form
  *   `*t` 는 **JS 식별자 레벨** 의 단축 (PM 007 §리스크 R5 mitigation 그대로).
  *
+ * Alienese 영역 침범 금지 (코드 컨벤션):
+ *   JS 변수명 / 함수 인자 / 로컬 const 등에 단문자 (`t`/`bg`/`c`/`sz`/`on`/`ic`) 사용 금지.
+ *   Alienese 시스템이 reserve. 대안 — `$tile` · `tile2` · `targetTile` 등 명시적/sigil 이름.
+ *
  * Spectrum `SpectrumMixin` 패턴 차용:
  *   - 베이스 클래스에서 alias map 일괄 처리
  *   - reactive property 자동 등록 (long-form 이름)

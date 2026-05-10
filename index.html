@@ -73,9 +73,9 @@ _spikeLifecycle.onHide({ stub: true })</pre>
             <div class="scenario-note" style="margin-top: 24px;">
                 <p><strong>Phase B 콘솔 검증 명령</strong>:</p>
                 <pre>// (1) F3 — Alienese alias JS 식별자
-const t = document.querySelectorAll('estreuv-dark-mode-tile')[1];
-t['*t'] = 'AI 테마'      // long-form text 와 동일 reactive prop
-t['*c'] = 'tomato'       // long-form color 와 동일
+const $tile = document.querySelectorAll('estreuv-dark-mode-tile')[1];
+$tile['*t'] = 'AI 테마'  // long-form text 와 동일 reactive prop
+$tile['*c'] = 'tomato'   // long-form color 와 동일
 
 // (2) Lifecycle race — 같은 hook 두 번 호출 시 dedup
 _spikeLifecycle.onShow({ stub: true })
