@@ -1,16 +1,21 @@
 {
-  "name": "estreuv-spike",
+  "name": "estreuv",
   "version": "0.0.1",
   "description": "EstreUV.js 3-week spike (option A pre-validation). Will move to monorepo packages/estreuv if PASS.",
   "type": "module",
   "private": true,
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./*": "./src/*",
+    "./*.js": "./src/*.js"
+  },
   "scripts": {
     "start": "npx http-server . -p 8080 -c-1",
     "test": "echo \"vitest setup pending Phase C D5\" && exit 0"
   },
   "dependencies": {
     "@lit/context": "^1.1.0",
-    "estreui": "^1.4.0",
     "lit": "^3.3.0"
   },
   "keywords": [
