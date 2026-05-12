@@ -12,7 +12,8 @@
   },
   "scripts": {
     "start": "npx http-server . -p 8080 -c-1",
-    "test": "echo \"vitest setup pending Phase C D5\" && exit 0"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@lit/context": "^1.1.0",
@@ -31,5 +32,9 @@
   "repository": {
     "type": "spike-only",
     "note": "Temporary scaffold; not a published package."
+  },
+  "devDependencies": {
+    "happy-dom": "^20.9.0",
+    "vitest": "^4.1.6"
   }
 }

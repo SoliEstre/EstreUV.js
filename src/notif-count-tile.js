@@ -96,10 +96,12 @@ export class NotifCountTile extends EstreUVElement {
         return this._numCount > cap ? `${cap}+` : String(this._numCount);
     }
 
-    /** 외부 공개 메서드 — count +1. 직접 mutate 하지 않고 intent 위임 (dual binding 회피) */
+    /** 외부 공개 메서드 — count +by. 직접 mutate 하지 않고 intent 위임 (dual binding 회피) */
     bump(by = 1) {
-        const next = Math.max(0, this._numCount + (Number(by) || 1));
-        this.count = next;                              // local reactive prop (낙관적 갱신)
+        const cur = Number(this.count);
+        const base = Number.isFinite(cur) && cur >= 0 ? Math.floor(cur) : 0;
+        const next = Math.max(0, base + (Number(by) || 1));
+        this.count = next;                              // local reactive prop (낙관적 갱신, source of truth)
         this.requestIntentUpdate({ notifCount: next }); // owner article 에 위임
     }
 
