@@ -69,13 +69,29 @@ EstreUV-spike/
 
 ## 실행 방법
 
+### 라이브러리 단독 검증 (이 repo)
+
 ```bash
 cd "EstreUV-spike"
 npm install
-npx http-server .   # 또는 `npx serve` · Python `python -m http.server` · VS Code Live Server 등
-# 브라우저에서 http://localhost:8080/index.html (bridge 시나리오) 또는
-#               http://localhost:8080/index-standalone.html (단독 시나리오) 확인
+npx http-server . -p 8080 -c-1
+# http://localhost:8080/index.html (stub article — lifecycle 시뮬레이션)
+# http://localhost:8080/index-standalone.html (F2 — EstreUI 없이 단독 작동)
 ```
+
+### 실 사용자 통합 검증 (별 작업폴더 `estreuv-integration-app/`)
+
+`npm create estreui` 로 스캐폴드한 진짜 EstreUI 앱이 이 repo 를 `npm install file:../EstreUV-spike` 로 의존. canonical 부트 + HTTPS dev server.
+
+```bash
+cd "../estreuv-integration-app"
+npm install        # 이미 됐으면 skip — node_modules/estreuv → 이 repo symlink
+npm run dev        # estreui dev — HTTPS localhost:8080
+```
+
+`src/` 변경은 symlink 라 즉시 반영. 자세한 검증 절차는 `estreuv-integration-app/README.md` 의 Antigravity 핸드오프 체크리스트.
+
+> 노선 구분: 이 repo = **라이브러리 소스 SSoT** / `estreuv-integration-app/` = **소비자 테스트 하네스** (단방향 의존, git·생명주기 분리). (구) `EstreUI.js/spike-test/` 는 폐기됨.
 
 ## 다음 단계 (Phase C)
 
