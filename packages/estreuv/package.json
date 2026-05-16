@@ -29,6 +29,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "measure": "node scripts/measure-bundle.mjs",
+    "measure:d1": "node scripts/measure-d1.mjs",
     "types": "tsc -p tsconfig.json",
     "prepack": "npm run types"
   },
