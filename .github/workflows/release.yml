@@ -1,0 +1,40 @@
+name: Release
+
+# Changesets-driven version automation.
+#
+# DESIGN: this workflow ONLY opens/updates the "Version Packages" PR
+# (bumps versions + CHANGELOG from accumulated .changeset/*.md). It does
+# NOT publish to npm — `npm publish` stays a maintainer-run step with an
+# npm auth session, by established release policy. After merging the
+# Version PR, the maintainer runs `npm run release` (changeset publish)
+# locally.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Open / update Version Packages PR
+        uses: changesets/action@v1
+        with:
+          version: npm run version-packages
+          # no `publish:` input — publish is intentionally maintainer-manual
+          commit: "chore: version packages"
+          title: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
