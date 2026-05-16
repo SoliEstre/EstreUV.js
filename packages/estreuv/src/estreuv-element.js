@@ -44,6 +44,7 @@ export class EstreUVElement extends LitElement {
 
     constructor() {
         super();
+        /** @type {import('./intent-context.js').EstreIntent} */
         this.intent = {};
         this._everShown = false;
         this._everFocused = false;
@@ -64,7 +65,7 @@ export class EstreUVElement extends LitElement {
     /**
      * Child → Parent intent 변경 위임 (uni-directional, dual binding race 회피).
      * 직접 this.intent = ... 하지 말고 이 메서드 호출.
-     * @param {Object} patch
+     * @param {Partial<import('./intent-context.js').EstreIntent>} patch
      */
     requestIntentUpdate(patch) {
         requestIntentUpdate(this, patch);
@@ -75,7 +76,11 @@ export class EstreUVElement extends LitElement {
         return getLifecycleHistory(this);
     }
 
-    /** 특정 lifecycle 이 호출된 적 있는지 (true/false) */
+    /**
+     * 특정 lifecycle 이 호출된 적 있는지 (true/false)
+     * @param {string} hookName
+     * @returns {boolean}
+     */
     hasLifecycleFired(hookName) {
         const counts = this._estreuvLifecycleCounts;
         return Boolean(counts && counts[hookName] > 0);
