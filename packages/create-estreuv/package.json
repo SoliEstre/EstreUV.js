@@ -1,0 +1,50 @@
+{
+  "name": "create-estreuv",
+  "version": "0.1.0",
+  "description": "Scaffolding tool for EstreUV.js projects — pure EstreUV app or EstreUI + EstreUV pair app",
+  "type": "commonjs",
+  "main": "bin/estreuv.js",
+  "bin": {
+    "create-estreuv": "./bin/estreuv.js",
+    "estreuv": "./bin/estreuv.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "templates",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node test/smoke.mjs"
+  },
+  "keywords": [
+    "estreuv",
+    "estreui",
+    "estre",
+    "lit",
+    "web-components",
+    "scaffold",
+    "create",
+    "cli",
+    "micro-rimwork"
+  ],
+  "author": "SoliEstre",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoliEstre/EstreUV.js.git",
+    "directory": "packages/create-estreuv"
+  },
+  "homepage": "https://github.com/SoliEstre/EstreUV.js/tree/main/packages/create-estreuv#readme",
+  "bugs": {
+    "url": "https://github.com/SoliEstre/EstreUV.js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "commander": "^14.0.2",
+    "inquirer": "^8.2.7",
+    "create-estreui": "^1.0.5"
+  }
+}

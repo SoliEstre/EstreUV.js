@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EstreUV app</title>
+    <style>
+        :root { color-scheme: light dark; --bg: #fafafa; --fg: #1a1a1a; }
+        body[data-dark-mode] { --bg: #15171a; --fg: #e8e8e8; }
+        body {
+            margin: 0; min-height: 100vh;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg); color: var(--fg);
+            transition: background 200ms ease, color 200ms ease;
+        }
+        main { max-width: 760px; margin: 0 auto; padding: 40px 24px; }
+        h1 { font-weight: 650; letter-spacing: -0.02em; }
+        .tiles { display: flex; gap: 12px; flex-wrap: wrap; margin: 28px 0; }
+        .hint {
+            background: rgba(127,127,127,.1); border-left: 3px solid #2a8;
+            padding: 12px 16px; border-radius: 4px; font-size: 14px; line-height: 1.6;
+        }
+        code { font-family: ui-monospace, SFMono-Regular, monospace; }
+    </style>
+
+    <!--
+        EstreUV is consumed as an npm dependency over an import map (no build).
+        Lit core (lit-html / lit-element / @lit/reactive-element / @lit/context)
+        is a dependency of estreuv and resolves the same way.
+    -->
+    <script type="importmap">
+    {
+        "imports": {
+            "lit": "/node_modules/lit/index.js",
+            "lit/": "/node_modules/lit/",
+            "@lit/context": "/node_modules/@lit/context/index.js",
+            "@lit/reactive-element": "/node_modules/@lit/reactive-element/reactive-element.js",
+            "@lit/reactive-element/": "/node_modules/@lit/reactive-element/",
+            "lit-element/lit-element.js": "/node_modules/lit-element/lit-element.js",
+            "lit-html": "/node_modules/lit-html/lit-html.js",
+            "lit-html/": "/node_modules/lit-html/",
+            "estreuv": "/node_modules/estreuv/src/index.js",
+            "estreuv/": "/node_modules/estreuv/src/"
+        }
+    }
+    </script>
+    <script type="module" src="./scripts/tiles.js"></script>
+</head>
+<body>
+    <main>
+        <h1>EstreUV app</h1>
+        <p>A pure EstreUV.js app — micro-Rimwork (Lit class primitive), no build step.</p>
+
+        <div class="tiles">
+            <estreuv-dark-mode-tile text="Theme"></estreuv-dark-mode-tile>
+            <estreuv-clock-tile></estreuv-clock-tile>
+            <estreuv-notif-count-tile text="Inbox"></estreuv-notif-count-tile>
+        </div>
+
+        <div class="hint">
+            Edit <code>scripts/tiles.js</code> to register components, author your own
+            by extending <code>EstreUVElement</code> from <code>estreuv</code>, and run
+            <code>npm run dev</code>. To pair with EstreUI, scaffold with the
+            "EstreUI + EstreUV pair" option instead.
+        </div>
+    </main>
+</body>
+</html>
