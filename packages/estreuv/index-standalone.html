@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EstreUV-spike — F2 standalone scenario</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #fafafa;
+            --fg: #222;
+        }
+        body[data-dark-mode] {
+            --bg: #1a1a1a;
+            --fg: #eee;
+        }
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            transition: background 200ms ease, color 200ms ease;
+        }
+        main {
+            padding: 24px;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .standalone-note {
+            background: rgba(127, 127, 127, 0.1);
+            border-left: 3px solid #2a8;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>EstreUV-spike — F2 standalone scenario</h1>
+
+        <div class="standalone-note">
+            <p><strong>F2 검증</strong>: EstreUI 없이도 EstreUV component 가 작동해야 한다.</p>
+            <p>이 페이지는 <code>main.js</code> 부트스트랩도 거치지 않고 component 만 직접 import. <code>data-dark-mode</code> attribute 가 토글되는 것이 검증 포인트.</p>
+        </div>
+
+        <h2>Tile (단독 사용)</h2>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <estreuv-dark-mode-tile></estreuv-dark-mode-tile>
+            <!-- F3: long-form HTML attribute 검증 -->
+            <estreuv-dark-mode-tile text="테마" color="#2a8"></estreuv-dark-mode-tile>
+        </div>
+    </main>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "lit": "/node_modules/lit/index.js",
+            "lit/": "/node_modules/lit/",
+            "@lit/context": "/node_modules/@lit/context/index.js",
+            "@lit/reactive-element": "/node_modules/@lit/reactive-element/reactive-element.js",
+            "@lit/reactive-element/": "/node_modules/@lit/reactive-element/",
+            "lit-element/lit-element.js": "/node_modules/lit-element/lit-element.js",
+            "lit-html": "/node_modules/lit-html/lit-html.js",
+            "lit-html/": "/node_modules/lit-html/"
+        }
+    }
+    </script>
+    <!-- main.js 부트는 import 안 함. component 만 직접 등록. -->
+    <script type="module" src="./src/dark-mode-tile.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EstreUV-spike — bridge scenario</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #fafafa;
+            --fg: #222;
+        }
+        body[data-dark-mode] {
+            --bg: #1a1a1a;
+            --fg: #eee;
+        }
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            transition: background 200ms ease, color 200ms ease;
+        }
+        main {
+            padding: 24px;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .scenario-note {
+            background: rgba(127, 127, 127, 0.1);
+            border-left: 3px solid currentColor;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+        }
+        .tiles {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0;
+        }
+        small {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>EstreUV-spike — bridge scenario</h1>
+        <small>EstreUI article 환경 가정. EstreUI 미로드 시에는 stub lifecycle 자동 트리거.</small>
+
+        <div data-spike-article>
+            <div class="scenario-note">
+                <p>이 영역은 <code>[data-spike-article]</code> = stub article. 실 EstreUI 가 있으면 이 root 가 EstreUI 의 article 로 교체되고, intent provider 가 그 article 에 바인딩됩니다.</p>
+                <p>DevTools 콘솔에서:</p>
+                <pre>_spikeIntent.update({ flags: { highlighted: true } })
+_spikeLifecycle.onFocus({ stub: true }, true)  // isFirstFocus=true
+_spikeLifecycle.onHide({ stub: true })</pre>
+            </div>
+
+            <h2>Tiles</h2>
+            <div class="tiles">
+                <estreuv-dark-mode-tile></estreuv-dark-mode-tile>
+                <!-- F3 검증: long-form HTML attribute (text · color) 가 reactive property 까지 흐르는지 -->
+                <estreuv-dark-mode-tile text="테마" color="#7a4dff"></estreuv-dark-mode-tile>
+                <!-- Phase C 에서 tile 2종 추가 예정: 시계, 알림 카운트 -->
+            </div>
+
+            <div class="scenario-note" style="margin-top: 24px;">
+                <p><strong>Phase B 콘솔 검증 명령</strong>:</p>
+                <pre>// (1) F3 — Alienese alias JS 식별자
+const $tile = document.querySelectorAll('estreuv-dark-mode-tile')[1];
+$tile['*t'] = 'AI 테마'  // long-form text 와 동일 reactive prop
+$tile['*c'] = 'tomato'   // long-form color 와 동일
+
+// (2) Lifecycle race — 같은 hook 두 번 호출 시 dedup
+_spikeLifecycle.onShow({ stub: true })
+_spikeLifecycle.onShow({ stub: true })  // → "re-entrant ... skipped" 경고
+
+// (3) 카운터 검증
+document.querySelector('estreuv-dark-mode-tile')._estreuvLifecycleCounts
+document.querySelector('estreuv-dark-mode-tile').getLifecycleHistory()
+document.querySelector('estreuv-dark-mode-tile').hasLifecycleFired('onShow')</pre>
+            </div>
+        </div>
+
+        <hr style="margin-top: 32px; opacity: 0.3;" />
+        <p><small>F2 단독 시나리오는 <a href="index-standalone.html">index-standalone.html</a> 참고.</small></p>
+    </main>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "lit": "/node_modules/lit/index.js",
+            "lit/": "/node_modules/lit/",
+            "@lit/context": "/node_modules/@lit/context/index.js",
+            "@lit/reactive-element": "/node_modules/@lit/reactive-element/reactive-element.js",
+            "@lit/reactive-element/": "/node_modules/@lit/reactive-element/",
+            "lit-element/lit-element.js": "/node_modules/lit-element/lit-element.js",
+            "lit-html": "/node_modules/lit-html/lit-html.js",
+            "lit-html/": "/node_modules/lit-html/"
+        }
+    }
+    </script>
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
