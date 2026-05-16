@@ -1,0 +1,31 @@
+{
+  "name": "estreuv-monorepo",
+  "version": "0.0.0",
+  "description": "EstreUV.js monorepo — micro-Rimwork (Lit class primitive), sister to EstreUI.js macro-Rimwork",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "npm run test --workspace=packages/estreuv",
+    "measure": "npm run measure --workspace=packages/estreuv",
+    "dev": "npm run dev --workspace=packages/playground",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0"
+  },
+  "author": "SoliEstre",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoliEstre/EstreUV.js.git"
+  },
+  "homepage": "https://github.com/SoliEstre/EstreUV.js#readme",
+  "bugs": {
+    "url": "https://github.com/SoliEstre/EstreUV.js/issues"
+  }
+}
