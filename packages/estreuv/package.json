@@ -1,15 +1,18 @@
 {
   "name": "estreuv",
-  "version": "0.0.1",
-  "description": "EstreUV.js 3-week spike (option A pre-validation). Will move to monorepo packages/estreuv if PASS.",
+  "version": "0.1.0",
+  "description": "EstreUV.js — micro-Rimwork (Lit class primitive), sister to EstreUI.js. Intent context, lifecycle bridge, Alienese aliases, tiles.",
   "type": "module",
-  "private": true,
   "main": "./src/index.js",
   "exports": {
     ".": "./src/index.js",
     "./*": "./src/*",
     "./*.js": "./src/*.js"
   },
+  "files": [
+    "src",
+    "README.md"
+  ],
   "scripts": {
     "start": "npx http-server . -p 8080 -c-1",
     "test": "vitest run",
@@ -23,16 +26,25 @@
   "keywords": [
     "estreui",
     "estreuv",
-    "spike",
+    "estre",
     "lit",
     "web-components",
-    "micro-rimwork"
+    "micro-rimwork",
+    "rimwork"
   ],
   "author": "SoliEstre",
   "license": "MIT",
   "repository": {
-    "type": "spike-only",
-    "note": "Temporary scaffold; not a published package."
+    "type": "git",
+    "url": "git+https://github.com/SoliEstre/EstreUV.js.git",
+    "directory": "packages/estreuv"
+  },
+  "homepage": "https://github.com/SoliEstre/EstreUV.js/tree/main/packages/estreuv#readme",
+  "bugs": {
+    "url": "https://github.com/SoliEstre/EstreUV.js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "esbuild": "^0.28.0",
