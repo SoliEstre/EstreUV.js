@@ -1,6 +1,6 @@
 {
   "name": "estreuv",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "EstreUV.js — micro-Rimwork (Lit class primitive), sister to EstreUI.js. Intent context, lifecycle bridge, Alienese aliases, tiles.",
   "type": "module",
   "main": "./src/index.js",
