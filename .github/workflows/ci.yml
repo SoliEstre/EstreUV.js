@@ -24,5 +24,7 @@ jobs:
         run: npm run measure:d1 --workspace=packages/estreuv
       - name: Type declarations (D4 — .d.ts emit must stay green)
         run: npm run types --workspace=packages/estreuv
+      - name: Fresh-install packaging smoke (published artifact contract)
+        run: npm run smoke:pack --workspace=packages/estreuv
       - name: create-estreuv smoke test
         run: npm run test --workspace=packages/create-estreuv
