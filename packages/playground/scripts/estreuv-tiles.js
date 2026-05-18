@@ -2,10 +2,11 @@
  * EstreUV tile components — side-effect import이 <estreuv-*> custom element 를 등록.
  * index.html 의 <script type="module"> 로 로드됨.
  *
- * 이 앱은 EstreUV 를 npm 의존 (`file:../EstreUV-spike`, 패키지명 `estreuv`) 으로 받음.
- * importmap 이 `estreuv` / `estreuv/` 를 node_modules/estreuv/src/ 로 매핑.
+ * 이 앱(monorepo in-repo playground)은 EstreUV 를 워크스페이스 의존
+ * (`"estreuv": "*"` → packages/estreuv 심링크) 으로 받음. importmap 이
+ * `estreuv` / `estreuv/` 를 node_modules/estreuv/src/ 로 매핑.
  *
- * GA 시점엔 `npm install estreuv` (published) 로 동일하게 작동.
+ * 외부 사용자 시나리오에선 `npm install estreuv` (published) 로 동일 작동.
  */
 
 import 'estreuv/dark-mode-tile.js';

@@ -4,7 +4,8 @@
     "description": "EstreUV.js in-repo playground — EstreUI + EstreUV pair demo / test / template source (not published)",
     "private": true,
     "scripts": {
-        "dev": "estreui dev"
+        "dev": "estreui dev",
+        "test": "node test/integration-contract.test.mjs"
     },
     "dependencies": {
         "@lit/context": "^1.1.6",

@@ -98,9 +98,9 @@
     <link rel="preload" as="style" type="text/css" href="./styles/estreUiHandleUnical.css" />
 
     <!-- ═══════ EstreUV.js (Lit-based micro-Rimwork) integration ═══════
-         EstreUV 를 npm 의존 (`estreuv`, file:../EstreUV-spike) 으로 받아 ESM importmap 으로 로드.
+         EstreUV 를 워크스페이스 의존 (`"estreuv": "*"` → packages/estreuv 심링크) 으로 받아 ESM importmap 으로 로드.
          lit core (lit-html · lit-element · @lit/reactive-element · @lit/context) 는 EstreUV 의 의존.
-         GA 시점엔 `npm install estreuv` (published) 로 동일.
+         외부 사용자 시나리오에선 `npm install estreuv` (published) 로 동일.
     -->
     <script type="importmap">
     {
