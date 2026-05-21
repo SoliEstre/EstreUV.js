@@ -2,10 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// Dependency versions for scaffolded projects. Kept in lockstep with
-// packages/estreuv's own dependency ranges.
+// Dependency versions for scaffolded projects. Kept in lockstep with the
+// latest published estreuv. NOTE: a `^0.x` caret locks the minor (semver
+// rule for 0.x), so `^0.1.0` would EXCLUDE 0.2.0 — pin to the current
+// published minor. (Becomes ^1.0.0 at the estreuv 1.0.0 GA.)
 const ESTREUV_DEPS = {
-    estreuv: '^0.1.0',
+    estreuv: '^0.2.0',
     lit: '^3.3.0',
     '@lit/context': '^1.1.0'
 };
