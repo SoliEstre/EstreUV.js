@@ -10,3 +10,5 @@ coverage/
 *.pem
 packages/*/types/
 *.tsbuildinfo
+.vitepress/cache/
+.vitepress/dist/
