@@ -1,0 +1,10 @@
+node_modules
+.git
+*.pem
+server.cert
+server.key
+Dockerfile
+nginx.conf
+.dockerignore
+test
+ESTREUV-PAIR-VERIFY.md
