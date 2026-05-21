@@ -1,0 +1,25 @@
+/* Live demo block (```estreuv-demo) — live render above, source below. */
+.estreuv-demo {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  margin: 18px 0;
+  overflow: hidden;
+}
+
+.estreuv-demo__live {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 24px;
+  background: var(--vp-c-bg-soft);
+}
+
+.estreuv-demo__code [class*='language-'] {
+  margin: 0;
+  border-radius: 0;
+}
+
+.estreuv-demo__code [class*='language-']::before {
+  display: none; /* hide the lang label inside the demo frame */
+}

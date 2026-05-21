@@ -9,6 +9,36 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
 
+  // Treat <estreuv-*> as custom elements so Vue's compiler leaves them
+  // intact (they upgrade client-side once registered in theme/index.js).
+  vue: {
+    template: {
+      compilerOptions: {
+        isCustomElement: (tag) => tag.startsWith('estreuv-'),
+      },
+    },
+  },
+
+  markdown: {
+    // mermaid-style live demo: an ```estreuv-demo fenced block renders the
+    // markup live (registered custom elements) AND shows the source.
+    config: (md) => {
+      const fence = md.renderer.rules.fence;
+      md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+        const token = tokens[idx];
+        if (token.info.trim() === 'estreuv-demo') {
+          const raw = token.content;
+          const asHtml = fence([{ ...token, info: 'html' }], 0, options, env, self);
+          return `<div class="estreuv-demo">
+  <div class="estreuv-demo__live">\n${raw}\n</div>
+  <div class="estreuv-demo__code">${asHtml}</div>
+</div>\n`;
+        }
+        return fence(tokens, idx, options, env, self);
+      };
+    },
+  },
+
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },

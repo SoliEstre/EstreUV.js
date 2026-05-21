@@ -9,7 +9,7 @@ A theme toggle cycling **auto → light → dark**, persisted to `localStorage` 
 `body[data-dark-mode]` (delegates to `estreUi.setDarkMode` when EstreUI is present). Pattern:
 local-state + global-API delegation.
 
-```html
+```estreuv-demo
 <estreuv-dark-mode-tile></estreuv-dark-mode-tile>
 <estreuv-dark-mode-tile text="Theme" color="#2a8"></estreuv-dark-mode-tile>
 ```
@@ -27,7 +27,7 @@ Method: `.cycle()` — advance to the next state.
 A timer-driven clock. Starts its interval on `onShow`, stops on `onHide` — a clean example of
 **resource lifecycle** tied to visibility (and `onClose`/`onRelease`/`disconnectedCallback` cleanup).
 
-```html
+```estreuv-demo
 <estreuv-clock-tile></estreuv-clock-tile>
 <estreuv-clock-tile format="12h" text="12h"></estreuv-clock-tile>
 ```
@@ -38,7 +38,7 @@ A badge counter driven by **external / intent** state. `bump(by)` and `clear()` 
 `requestIntentUpdate` (no direct mutation); `onShow` syncs from `intent.notifCount`. Shows `N+` past
 `maxDisplay`.
 
-```html
+```estreuv-demo
 <estreuv-notif-count-tile></estreuv-notif-count-tile>
 <estreuv-notif-count-tile count="128" max="99" text="badge cap"></estreuv-notif-count-tile>
 ```
@@ -50,7 +50,7 @@ Methods: `.bump(by = 1)`, `.clear()`.
 A nested-container prototype — a sidebar with light-DOM `<estreuv-notelle-item>` children. Demonstrates
 **nested lifecycle** (children receive hooks via the flat dispatch) and host-level event bubbling.
 
-```html
+```estreuv-demo
 <estreuv-notelle-sidebar title="Notelle">
   <estreuv-notelle-item label="Inbox" icon="📥"></estreuv-notelle-item>
   <estreuv-notelle-item label="Archive" icon="🗄"></estreuv-notelle-item>
