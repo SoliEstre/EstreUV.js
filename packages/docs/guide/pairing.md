@@ -54,3 +54,17 @@ tiles exist when `onOpen` wires the provider.
 The tile module loads asynchronously and dispatches `estreuv:ready`. Awaiting it before EstreUI brings
 the page guarantees the `[data-estreuv]` elements are present when the lifecycle first fires — and the
 [per-tick dedup](/guide/lifecycle#per-tick-dedup) absorbs any double dispatch during boot.
+
+## Live example — the playground
+
+The [playground](https://github.com/SoliEstre/EstreUV.js/tree/main/packages/playground) is a complete
+pair app: an **inbox panel** where a sidebar (folder nav), a message list, an unread badge, a clock, and
+a theme toggle all share **one intent** (`{ sidebarActive, counts, notifCount, darkMode }`). Clicking a
+folder, reading a message, or a simulated incoming notification flows **event-up → intent → prop-down**,
+so several tiles react at once from a single source of truth — the strong-coupling the bridge enables.
+
+```sh
+git clone https://github.com/SoliEstre/EstreUV.js
+cd EstreUV.js && npm install
+npm run dev              # playground
+```
