@@ -27,6 +27,8 @@ export class EstreuvSidebar extends EstreUVElement {
         collapsed: { type: Boolean, reflect: true },
         /** 현재 active 항목 라벨 — 항목들에게 prop-down */
         activeLabel: { type: String, attribute: 'active-label' },
+        /** 라벨별 배지 카운트 맵 {label: n} — 항목들에게 count prop-down */
+        counts: { type: Object },
         // title 은 applyAliases 가 추가
     };
 
@@ -62,6 +64,7 @@ export class EstreuvSidebar extends EstreUVElement {
         super();
         this.collapsed = false;
         this.activeLabel = '';
+        this.counts = {};
         this.title = 'Menu';
     }
 
@@ -79,15 +82,24 @@ export class EstreuvSidebar extends EstreUVElement {
     /** collapsed / activeLabel 변경을 슬롯된 항목들에 prop-down (양방향 race 없음 — owner 단방향) */
     _propagateToItems() {
         const items = this.querySelectorAll('estreuv-sidebar-item');
+        const counts = this.counts ?? {};
         items.forEach((item) => {
             item.compact = this.collapsed;
             item.active = item.label === this.activeLabel;
+            if (item.label in counts) item.count = counts[item.label];
         });
     }
 
     updated(changedProperties) {
         super.updated?.(changedProperties);
-        if (changedProperties.has('collapsed') || changedProperties.has('activeLabel')) {
+        // 라이브 intent 변경(prop-down) → counts/active 동기 (메시지 읽음 등으로 갱신될 때)
+        if (changedProperties.has('intent')) {
+            const intent = this.intent ?? {};
+            if (intent.counts != null) this.counts = intent.counts;
+            if (intent.sidebarActive != null) this.activeLabel = String(intent.sidebarActive);
+        }
+        if (changedProperties.has('collapsed') || changedProperties.has('activeLabel')
+            || changedProperties.has('counts')) {
             this._propagateToItems();
         }
     }
@@ -130,6 +142,7 @@ export class EstreuvSidebar extends EstreUVElement {
         const intent = this.intent ?? {};
         if (intent.sidebarCollapsed != null) this.collapsed = !!intent.sidebarCollapsed;
         if (intent.sidebarActive != null) this.activeLabel = String(intent.sidebarActive);
+        if (intent.counts != null) this.counts = intent.counts;
     }
 }
 

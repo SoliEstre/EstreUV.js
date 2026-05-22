@@ -43,6 +43,7 @@ for (const t of ['dark-mode-tile', 'clock-tile', 'notif-count-tile', 'sidebar', 
 for (const h of ['intent-context', 'lifecycle-bridge', 'alienese-alias']) {
     ok(tiles.includes(`'estreuv/${h}.js'`), `estreuv-tiles imports helper ${h}`);
 }
+ok(tiles.includes("'./message-list.js'"), 'estreuv-tiles imports local ./message-list.js (예제 컴포넌트)');
 ok(/window\._estreuv\s*=/.test(tiles), 'estreuv-tiles exposes window._estreuv');
 ok(tiles.includes("estreuv:ready"), 'estreuv-tiles dispatches estreuv:ready');
 
@@ -58,14 +59,16 @@ ok(main.includes('_estreuvReady') && main.includes('estreuv:ready'), 'race-safe 
 ok(main.includes('provideIntent') && main.includes('wireArticle'), 'onOpen wires provideIntent + wireArticle');
 ok(main.includes("intent-update"), 'event-up bridge (intent-update listener) present');
 
-// 5. staticDoc.html — expected custom elements present
+// 5. staticDoc.html — strong-coupling panel demo composition
 const sd = read('staticDoc.html');
 const count = (s) => sd.split(s).length - 1;
-ok(count('<estreuv-dark-mode-tile') >= 2, 'staticDoc: ≥2 dark-mode-tile (incl. F3 attr variant)');
-ok(count('<estreuv-clock-tile') >= 2, 'staticDoc: ≥2 clock-tile');
-ok(count('<estreuv-notif-count-tile') >= 2, 'staticDoc: ≥2 notif-count-tile');
-ok(sd.includes('<estreuv-sidebar'), 'staticDoc: sidebar present');
-ok(count('<estreuv-sidebar-item') >= 3, 'staticDoc: ≥3 sidebar-item');
+ok(sd.includes('<estreuv-dark-mode-tile'), 'staticDoc: dark-mode-tile (topbar)');
+ok(sd.includes('<estreuv-clock-tile'), 'staticDoc: clock-tile (topbar)');
+ok(sd.includes('<estreuv-notif-count-tile'), 'staticDoc: notif-count-tile (topbar)');
+ok(sd.includes('<estreuv-sidebar'), 'staticDoc: sidebar (folder nav)');
+ok(count('<estreuv-sidebar-item') >= 3, 'staticDoc: ≥3 sidebar-item (folders)');
+ok(sd.includes('<estreuv-message-list'), 'staticDoc: message-list present (강결합 중심)');
+ok(sd.includes('sidebarActive') && sd.includes('counts'), 'staticDoc: shared-intent loop documented (sidebarActive/counts)');
 ok(/\$tile\b/.test(sd) && !/\bconst\s+t\b/.test(sd), 'console guide uses $tile (no single-letter Alienese collision)');
 
 console.log(failures ? `\n${failures} failure(s) — pair-integration contract drifted` : '\nPair-integration contract: all checks passed');

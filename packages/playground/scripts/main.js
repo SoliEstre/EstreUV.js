@@ -33,7 +33,7 @@ class HomePageHandler extends EstrePageHandler {
         // intent provider 부착 — article root 확정 시점
         const articleRoot = handle?.article ?? handle?.element ?? document.querySelector('[data-article-id="main"][data-static="1"]');
         if (articleRoot && window._estreuv && !_estreuvIntent) {
-            _estreuvIntent = window._estreuv.intent.provideIntent(articleRoot, { step: "home", data: { _bootMs: Date.now() } });
+            _estreuvIntent = window._estreuv.intent.provideIntent(articleRoot, { step: "home", sidebarActive: "Inbox", counts: {}, notifCount: 0, data: { _bootMs: Date.now() } });
             window._spikeIntent = _estreuvIntent;       // 콘솔 호환 (spike-test 와 동일 이름 유지)
             _estreuvLifecycle = window._estreuv.bridge.wireArticle(articleRoot);
             window._spikeLifecycle = _estreuvLifecycle;

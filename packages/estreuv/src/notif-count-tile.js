@@ -83,6 +83,13 @@ export class NotifCountTile extends EstreUVElement {
 
     willUpdate(changedProperties) {
         super.willUpdate?.(changedProperties);
+        // 라이브 intent → count 동기 (prop-down). onShow 뿐 아니라 intent 가 바뀔 때마다 반영.
+        if (changedProperties.has('intent')) {
+            const fromIntent = this.intent?.notifCount ?? this.intent?.data?.notifCount;
+            if (fromIntent != null && Number(fromIntent) !== Number(this.count)) {
+                this.count = Number(fromIntent);
+            }
+        }
         if (changedProperties.has('count')) {
             const n = Number(this.count);
             this._numCount = Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;

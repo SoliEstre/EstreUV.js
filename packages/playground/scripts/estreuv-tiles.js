@@ -15,6 +15,8 @@ import 'estreuv/notif-count-tile.js';
 // 사이드바 prototype — nested 컨테이너 + 중첩 lifecycle
 import 'estreuv/sidebar.js';
 import 'estreuv/sidebar-item.js';
+// playground 예제 컴포넌트 (라이브러리 아님) — 강결합 데모의 메시지 리스트
+import './message-list.js';
 
 // 콘솔 디버깅용 helper 노출 (page handler 도 이걸 씀)
 import * as _intent from 'estreuv/intent-context.js';

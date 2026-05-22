@@ -26,6 +26,8 @@ export class EstreuvSidebarItem extends EstreUVElement {
         active: { type: Boolean, reflect: true },
         /** compact (사이드바 collapsed 시) — 사이드바가 prop-down */
         compact: { type: Boolean, reflect: true },
+        /** 선택적 배지 카운트 (사이드바가 counts 맵에서 prop-down). 0/없으면 숨김 */
+        count: { type: Number },
         // label · icon 은 applyAliases 가 추가
     };
 
@@ -48,6 +50,13 @@ export class EstreuvSidebarItem extends EstreUVElement {
         :host(:hover) a { background: rgba(127,127,127,0.12); }
         :host([active]) a { background: rgba(127,127,127,0.22); font-weight: 700; }
         .icon { width: 1.1em; text-align: center; flex: 0 0 auto; }
+        .label-text { flex: 1; }
+        .badge {
+            min-width: 18px; padding: 0 6px; height: 18px; border-radius: 9px;
+            background: var(--estreuv-badge, #e5484d); color: #fff;
+            font-size: 0.7rem; font-weight: 700;
+            display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
+        }
         :host([compact]) .label-text { display: none; }
     `;
 
@@ -55,6 +64,7 @@ export class EstreuvSidebarItem extends EstreUVElement {
         super();
         this.active = false;
         this.compact = false;
+        this.count = 0;
         this.label = '';
         this.icon = '•';
         this._everShownFromArticle = false;
@@ -73,6 +83,7 @@ export class EstreuvSidebarItem extends EstreUVElement {
             <a @click=${() => this._activate()} title=${this.label}>
                 <span class="icon" aria-hidden="true">${this.icon}</span>
                 <span class="label-text">${this.label}</span>
+                ${this.count > 0 ? html`<span class="badge">${this.count}</span>` : ''}
             </a>
         `;
     }
