@@ -11,8 +11,8 @@ export default {
       import('estreuv/dark-mode-tile.js');
       import('estreuv/clock-tile.js');
       import('estreuv/notif-count-tile.js');
-      import('estreuv/notelle-sidebar.js');
-      import('estreuv/notelle-item.js');
+      import('estreuv/sidebar.js');
+      import('estreuv/sidebar-item.js');
     }
   },
 };

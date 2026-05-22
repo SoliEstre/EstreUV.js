@@ -23,7 +23,7 @@ Application → Service Workers → Unregister 후 새로고침.
 ### 부트 / F1 — article lifecycle 자동 전파
 - [ ] 콘솔에 `[estreuv-app] HomePageHandler.onBring/onOpen/onShow` 순서 로그
 - [ ] `[estreuv-app] intent provider + lifecycle bridge wired to articleRoot:` 로그
-- [ ] 타일들이 보임: dark-mode ×2, clock ×2(흐르는 시계), notif-count ×2, Notelle 사이드바(Inbox/Archive/Trash)
+- [ ] 타일들이 보임: dark-mode ×2, clock ×2(흐르는 시계), notif-count ×2, 사이드바(Inbox/Archive/Trash)
 - [ ] 페이지 재방문(다른 페이지 갔다 복귀) 시 `onHide`→`onShow` 가 타일에 다시 전파, **중복 없이 1회씩**
 
 ### F2 — 단독 동작 (EstreUI 채널과 분리)

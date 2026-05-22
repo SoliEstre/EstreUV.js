@@ -1,26 +1,24 @@
 /**
- * EstreUV — Notelle Sidebar prototype (Phase C) — nested 컨테이너 케이스
+ * EstreUV — Sidebar — nested 컨테이너 케이스
  *
- * 사이드바 컨테이너 component. 안의 항목들 (`<estreuv-notelle-item>`) 도 EstreUV component →
+ * 사이드바 컨테이너 component. 안의 항목들 (`<estreuv-sidebar-item>`) 도 EstreUV component →
  * **중첩 lifecycle** 검증: article 의 lifecycle dispatch (`dispatchLifecycle(articleRoot, ...)`)
  * 가 `querySelectorAll('[data-estreuv]')` 로 *임의 깊이의* 자손을 평면적으로 찾으므로,
  * 사이드바도 + 그 안의 항목들도 모두 동명 lifecycle 메서드를 받는다. 별도 sub-coordinator 불필요.
  *
- * 핵심 검증 (Phase C):
+ * 핵심 검증:
  * - F1 확장: nested EstreUV component 가 article lifecycle 에 균일 참여 (사이드바 + N개 항목 모두 onShow/onHide 받음)
  * - 리소스 분리: 사이드바의 collapsed state 변경은 prop-down (각 item 이 받음). 양방향 race 없음
- * - Notelle 류 UI (사이드바 + 항목 리스트) 가 EstreUV 로 자연스럽게 — D2 (OS shell 마이그레이션) 의 정성 근거
- *
- * Estrelle Phase 1~2 OS shell 의 사이드바/리스트 컴포넌트가 이 패턴으로 마이그레이션 가능.
+ * - 사이드바 + 항목 리스트 류 UI 가 EstreUV 로 자연스럽게 — D2 (OS shell 마이그레이션) 의 정성 근거
  */
 
 import { html, css } from 'lit';
 import { EstreUVElement } from './estreuv-element.js';
 import { applyAliases } from './alienese-alias.js';
 
-export class NotelleSidebar extends EstreUVElement {
+export class EstreuvSidebar extends EstreUVElement {
 
-    /** Alienese: `*t` → `title`, `*on` → `collapsed` 의 반대... → 그냥 `*t` 만 (collapsed 는 boolean 이라 별도) */
+    /** Alienese: `*t` → `title` */
     static aliases = { '*t': 'title' };
 
     static properties = {
@@ -64,23 +62,23 @@ export class NotelleSidebar extends EstreUVElement {
         super();
         this.collapsed = false;
         this.activeLabel = '';
-        this.title = 'Notelle';
+        this.title = 'Menu';
     }
 
     connectedCallback() {
         super.connectedCallback();
         // 항목 클릭 이벤트는 host (light DOM) 에서 직접 받음 — slot 경유 shadow 전파 의존 X
-        this.addEventListener('notelle-item-activate', this._onItemActivate);
+        this.addEventListener('estreuv-sidebar-activate', this._onItemActivate);
     }
 
     disconnectedCallback() {
-        this.removeEventListener('notelle-item-activate', this._onItemActivate);
+        this.removeEventListener('estreuv-sidebar-activate', this._onItemActivate);
         super.disconnectedCallback();
     }
 
     /** collapsed / activeLabel 변경을 슬롯된 항목들에 prop-down (양방향 race 없음 — owner 단방향) */
     _propagateToItems() {
-        const items = this.querySelectorAll('estreuv-notelle-item');
+        const items = this.querySelectorAll('estreuv-sidebar-item');
         items.forEach((item) => {
             item.compact = this.collapsed;
             item.active = item.label === this.activeLabel;
@@ -96,15 +94,15 @@ export class NotelleSidebar extends EstreUVElement {
 
     toggleCollapsed() {
         this.collapsed = !this.collapsed;
-        this.requestIntentUpdate({ notelleSidebarCollapsed: this.collapsed });
+        this.requestIntentUpdate({ sidebarCollapsed: this.collapsed });
     }
 
-    /** 항목 클릭 시 (item 이 'notelle-item-activate' 이벤트 dispatch) → active 갱신 + intent 위임 */
+    /** 항목 클릭 시 (item 이 'estreuv-sidebar-activate' 이벤트 dispatch) → active 갱신 + intent 위임 */
     _onItemActivate(e) {
         const label = e.detail?.label;
         if (label == null) return;
         this.activeLabel = label;
-        this.requestIntentUpdate({ notelleActive: label });
+        this.requestIntentUpdate({ sidebarActive: label });
     }
 
     render() {
@@ -130,10 +128,10 @@ export class NotelleSidebar extends EstreUVElement {
         super.onShow(handle);
         // intent 에서 collapsed / active 복원 (재방문 시 매번)
         const intent = this.intent ?? {};
-        if (intent.notelleSidebarCollapsed != null) this.collapsed = !!intent.notelleSidebarCollapsed;
-        if (intent.notelleActive != null) this.activeLabel = String(intent.notelleActive);
+        if (intent.sidebarCollapsed != null) this.collapsed = !!intent.sidebarCollapsed;
+        if (intent.sidebarActive != null) this.activeLabel = String(intent.sidebarActive);
     }
 }
 
-applyAliases(NotelleSidebar);
-customElements.define('estreuv-notelle-sidebar', NotelleSidebar);
+applyAliases(EstreuvSidebar);
+customElements.define('estreuv-sidebar', EstreuvSidebar);

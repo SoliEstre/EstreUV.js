@@ -120,7 +120,7 @@ the JS-side convention only.
 | `applyAliases`, `resolveAlias`, `isAliasApplied`, `ALIENESE_DEFAULT_ALIASES` | Alienese aliases |
 
 Bundled tiles: `estreuv/dark-mode-tile.js`, `estreuv/clock-tile.js`, `estreuv/notif-count-tile.js`,
-`estreuv/notelle-sidebar.js`, `estreuv/notelle-item.js`.
+`estreuv/sidebar.js`, `estreuv/sidebar-item.js`.
 
 ## Footprint
 

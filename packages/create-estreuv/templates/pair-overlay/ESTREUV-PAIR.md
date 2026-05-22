@@ -52,5 +52,5 @@ Then register `HomePageHandler` for your page and, before `estreUi.init()`,
 `await estreuvReady` so the tiles exist when `onOpen` wires the provider.
 
 Use `<estreuv-dark-mode-tile>`, `<estreuv-clock-tile>`,
-`<estreuv-notif-count-tile>` (and Notelle sidebar/item) anywhere in your
+`<estreuv-notif-count-tile>` (and the sidebar/item) anywhere in your
 article markup (e.g. `staticDoc.html`).

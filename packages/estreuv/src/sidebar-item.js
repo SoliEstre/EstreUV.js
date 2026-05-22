@@ -1,21 +1,21 @@
 /**
- * EstreUV — Notelle Item (Phase C) — 사이드바 안의 항목 component
+ * EstreUV — Sidebar Item — 사이드바 안의 항목 component
  *
- * `<estreuv-notelle-sidebar>` 의 slot 에 light-DOM 자식으로 배치됨. 따라서:
+ * `<estreuv-sidebar>` 의 slot 에 light-DOM 자식으로 배치됨. 따라서:
  * - article 의 `dispatchLifecycle(articleRoot, ...)` 가 `querySelectorAll('[data-estreuv]')` 로 직접 찾음
  *   → 사이드바와 *독립적으로* article lifecycle 을 받음 (중첩 깊이 무관)
  * - 동시에 부모 사이드바로부터 `compact` / `active` prop 을 prop-down 으로 받음 (단방향, race 없음)
- * - 클릭 시 `notelle-item-activate` 이벤트를 부모 사이드바에 event-up
+ * - 클릭 시 `estreuv-sidebar-activate` 이벤트를 부모 사이드바에 event-up
  *
  * 이중 채널 구조: (1) article ↔ item lifecycle (flat dispatch), (2) sidebar ↔ item state (prop-down/event-up).
- * 두 채널이 서로 간섭하지 않음 — Phase B 의 채널 분리 원칙이 nested 케이스에서도 성립.
+ * 두 채널이 서로 간섭하지 않음 — 채널 분리 원칙이 nested 케이스에서도 성립.
  */
 
 import { html, css } from 'lit';
 import { EstreUVElement } from './estreuv-element.js';
 import { applyAliases } from './alienese-alias.js';
 
-export class NotelleItem extends EstreUVElement {
+export class EstreuvSidebarItem extends EstreUVElement {
 
     /** Alienese: `*t` → `label`, `*ic` → `icon` */
     static aliases = { '*t': 'label', '*ic': 'icon' };
@@ -61,7 +61,7 @@ export class NotelleItem extends EstreUVElement {
     }
 
     _activate() {
-        this.dispatchEvent(new CustomEvent('notelle-item-activate', {
+        this.dispatchEvent(new CustomEvent('estreuv-sidebar-activate', {
             detail: { label: this.label },
             bubbles: true,
             composed: true,
@@ -86,5 +86,5 @@ export class NotelleItem extends EstreUVElement {
     }
 }
 
-applyAliases(NotelleItem);
-customElements.define('estreuv-notelle-item', NotelleItem);
+applyAliases(EstreuvSidebarItem);
+customElements.define('estreuv-sidebar-item', EstreuvSidebarItem);

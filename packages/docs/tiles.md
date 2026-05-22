@@ -45,17 +45,17 @@ A badge counter driven by **external / intent** state. `bump(by)` and `clear()` 
 
 Methods: `.bump(by = 1)`, `.clear()`.
 
-## `<estreuv-notelle-sidebar>` + `<estreuv-notelle-item>`
+## `<estreuv-sidebar>` + `<estreuv-sidebar-item>`
 
-A nested-container prototype — a sidebar with light-DOM `<estreuv-notelle-item>` children. Demonstrates
+A nested-container prototype — a sidebar with light-DOM `<estreuv-sidebar-item>` children. Demonstrates
 **nested lifecycle** (children receive hooks via the flat dispatch) and host-level event bubbling.
 
 ```estreuv-demo
-<estreuv-notelle-sidebar title="Notelle">
-  <estreuv-notelle-item label="Inbox" icon="📥"></estreuv-notelle-item>
-  <estreuv-notelle-item label="Archive" icon="🗄"></estreuv-notelle-item>
-  <estreuv-notelle-item label="Trash" icon="🗑"></estreuv-notelle-item>
-</estreuv-notelle-sidebar>
+<estreuv-sidebar title="Menu">
+  <estreuv-sidebar-item label="Inbox" icon="📥"></estreuv-sidebar-item>
+  <estreuv-sidebar-item label="Archive" icon="🗄"></estreuv-sidebar-item>
+  <estreuv-sidebar-item label="Trash" icon="🗑"></estreuv-sidebar-item>
+</estreuv-sidebar>
 ```
 
 ::: tip Live pair demo

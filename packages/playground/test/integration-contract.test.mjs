@@ -37,7 +37,7 @@ ok(index.includes('./scripts/estreuv-tiles.js'), 'index.html loads scripts/estre
 
 // 3. estreuv-tiles.js — registers tiles + exposes helpers + ready signal
 const tiles = read('scripts/estreuv-tiles.js');
-for (const t of ['dark-mode-tile', 'clock-tile', 'notif-count-tile', 'notelle-sidebar', 'notelle-item']) {
+for (const t of ['dark-mode-tile', 'clock-tile', 'notif-count-tile', 'sidebar', 'sidebar-item']) {
     ok(tiles.includes(`'estreuv/${t}.js'`), `estreuv-tiles imports ${t}`);
 }
 for (const h of ['intent-context', 'lifecycle-bridge', 'alienese-alias']) {
@@ -64,8 +64,8 @@ const count = (s) => sd.split(s).length - 1;
 ok(count('<estreuv-dark-mode-tile') >= 2, 'staticDoc: ≥2 dark-mode-tile (incl. F3 attr variant)');
 ok(count('<estreuv-clock-tile') >= 2, 'staticDoc: ≥2 clock-tile');
 ok(count('<estreuv-notif-count-tile') >= 2, 'staticDoc: ≥2 notif-count-tile');
-ok(sd.includes('<estreuv-notelle-sidebar'), 'staticDoc: notelle-sidebar present');
-ok(count('<estreuv-notelle-item') >= 3, 'staticDoc: ≥3 notelle-item');
+ok(sd.includes('<estreuv-sidebar'), 'staticDoc: sidebar present');
+ok(count('<estreuv-sidebar-item') >= 3, 'staticDoc: ≥3 sidebar-item');
 ok(/\$tile\b/.test(sd) && !/\bconst\s+t\b/.test(sd), 'console guide uses $tile (no single-letter Alienese collision)');
 
 console.log(failures ? `\n${failures} failure(s) — pair-integration contract drifted` : '\nPair-integration contract: all checks passed');

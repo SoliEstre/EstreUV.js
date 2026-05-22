@@ -45,10 +45,10 @@ for (const f of SRC_FILES) {
 // ─── I3: minified + gzip (lit core external) ────────────────────────────
 const tmp = mkdtempSync(join(tmpdir(), 'estreuv-bundle-'));
 const entryPath = join(tmp, 'entry.js');
-// 배럴 (index.js) + 모든 component 파일 (tile · notelle 등) 을 하나의 entry 로 — 소비자가 실제로 끌어다 쓰는 전부.
+// 배럴 (index.js) + 모든 component 파일 (tile · sidebar 등) 을 하나의 entry 로 — 소비자가 실제로 끌어다 쓰는 전부.
 // (index.js 의 deps 와 중복되는 모듈은 esbuild 가 dedupe)
 const componentFiles = SRC_FILES.filter(f => f !== 'index.js'
-    && (f.endsWith('-tile.js') || f.endsWith('-sidebar.js') || f.endsWith('-item.js')));
+    && (f.endsWith('-tile.js') || f.endsWith('sidebar.js') || f.endsWith('-item.js')));
 const entry = [
     `export * from ${JSON.stringify(join(SRC_DIR, 'index.js'))};`,
     ...componentFiles.map(f => `import ${JSON.stringify(join(SRC_DIR, f))};`),

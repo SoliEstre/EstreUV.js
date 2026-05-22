@@ -19,13 +19,13 @@
                             <estreuv-notif-count-tile count="128" max="99" text="badge cap"></estreuv-notif-count-tile>
                         </div>
 
-                        <h3 style="margin-top: 24px; ">Notelle 사이드바 prototype (nested 컨테이너 + 중첩 lifecycle)</h3>
+                        <h3 style="margin-top: 24px; ">사이드바 prototype (nested 컨테이너 + 중첩 lifecycle)</h3>
                         <p style="opacity: 0.6; font-size: 0.85rem; ">사이드바 (<code>data-estreuv</code>) + 항목들 (<code>data-estreuv</code>, slot 의 light-DOM 자식) 모두 article 의 flat dispatch (<code>querySelectorAll('[data-estreuv]')</code>) 로 lifecycle 받음. 헤더 클릭 → collapsed 토글 (항목들에 prop-down). 항목 클릭 → active (event-up).</p>
-                        <estreuv-notelle-sidebar title="Notelle">
-                            <estreuv-notelle-item label="Inbox" icon="📥"></estreuv-notelle-item>
-                            <estreuv-notelle-item label="Archive" icon="🗄"></estreuv-notelle-item>
-                            <estreuv-notelle-item label="Trash" icon="🗑"></estreuv-notelle-item>
-                        </estreuv-notelle-sidebar>
+                        <estreuv-sidebar title="Menu">
+                            <estreuv-sidebar-item label="Inbox" icon="📥"></estreuv-sidebar-item>
+                            <estreuv-sidebar-item label="Archive" icon="🗄"></estreuv-sidebar-item>
+                            <estreuv-sidebar-item label="Trash" icon="🗑"></estreuv-sidebar-item>
+                        </estreuv-sidebar>
 
                         <h3 style="margin-top: 24px; ">검증 콘솔 가이드 (DevTools)</h3>
                         <pre style="background: rgba(127,127,127,0.1); padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; ">// (1) F1 — article lifecycle 자동 전파: 부트 시 [estreuv-app] HomePageHandler.onBring/onOpen/onShow 로그 + tile 의 onShow 호출

@@ -12,9 +12,9 @@
 import 'estreuv/dark-mode-tile.js';
 import 'estreuv/clock-tile.js';
 import 'estreuv/notif-count-tile.js';
-// Notelle 사이드바 prototype — nested 컨테이너 + 중첩 lifecycle
-import 'estreuv/notelle-sidebar.js';
-import 'estreuv/notelle-item.js';
+// 사이드바 prototype — nested 컨테이너 + 중첩 lifecycle
+import 'estreuv/sidebar.js';
+import 'estreuv/sidebar-item.js';
 
 // 콘솔 디버깅용 helper 노출 (page handler 도 이걸 씀)
 import * as _intent from 'estreuv/intent-context.js';

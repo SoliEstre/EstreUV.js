@@ -22,7 +22,7 @@ inside an existing EstreUI app incrementally — one tile at a time — or use i
   `onRelease` dispatched to your components, with per-tick dedup so each fires exactly once.
 - **Intent context** — uni-directional state sharing over `@lit/context` (prop-down / event-up).
 - **Alienese aliases** — short attribute aliases (`*t` → `text`, etc.) at zero build cost.
-- **Bundled tiles** — dark-mode, clock, notif-count, and a Notelle sidebar to learn from or use directly.
+- **Bundled tiles** — dark-mode, clock, notif-count, and a sidebar to learn from or use directly.
 
 ## Footprint
 

@@ -1,31 +1,31 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { dispatchLifecycle } from '../src/lifecycle-bridge.js';
-import '../src/notelle-sidebar.js';
-import '../src/notelle-item.js';
+import '../src/sidebar.js';
+import '../src/sidebar-item.js';
 
 /**
- * Notelle 사이드바 — nested 컨테이너 케이스 (Phase C).
+ * Sidebar — nested 컨테이너 케이스.
  * 검증 포인트:
  *  - article 의 flat dispatch (querySelectorAll('[data-estreuv]')) 가 사이드바 + slot 의 항목들 *모두* 도달
  *  - 사이드바 collapsed/activeLabel → 항목들에 prop-down (단방향)
  *  - 항목 activate → 사이드바에 event-up → activeLabel 갱신 + intent 위임
  *  - 두 채널 (article↔item lifecycle / sidebar↔item state) 비간섭
  */
-describe('estreuv-notelle-sidebar (nested container + nested lifecycle)', () => {
+describe('estreuv-sidebar (nested container + nested lifecycle)', () => {
     let article, sidebar, items;
 
     beforeEach(async () => {
         document.body.innerHTML = `
             <article data-article-id="main" data-static="1">
-              <estreuv-notelle-sidebar title="Notelle">
-                <estreuv-notelle-item label="Inbox" icon="📥"></estreuv-notelle-item>
-                <estreuv-notelle-item label="Archive" icon="🗄"></estreuv-notelle-item>
-                <estreuv-notelle-item label="Trash" icon="🗑"></estreuv-notelle-item>
-              </estreuv-notelle-sidebar>
+              <estreuv-sidebar title="Menu">
+                <estreuv-sidebar-item label="Inbox" icon="📥"></estreuv-sidebar-item>
+                <estreuv-sidebar-item label="Archive" icon="🗄"></estreuv-sidebar-item>
+                <estreuv-sidebar-item label="Trash" icon="🗑"></estreuv-sidebar-item>
+              </estreuv-sidebar>
             </article>`;
         article = document.querySelector('article');
-        sidebar = document.querySelector('estreuv-notelle-sidebar');
-        items = [...document.querySelectorAll('estreuv-notelle-item')];
+        sidebar = document.querySelector('estreuv-sidebar');
+        items = [...document.querySelectorAll('estreuv-sidebar-item')];
         await sidebar.updateComplete;
         await Promise.all(items.map(i => i.updateComplete));
     });
@@ -62,14 +62,14 @@ describe('estreuv-notelle-sidebar (nested container + nested lifecycle)', () => 
         expect(sidebar.collapsed).toBe(false);
         await sidebar.updateComplete;
         items.forEach(i => expect(i.compact).toBe(false));
-        expect(events).toEqual([{ notelleSidebarCollapsed: false }]);
+        expect(events).toEqual([{ sidebarCollapsed: false }]);
     });
 
     it('item activate → event-up to sidebar → activeLabel + prop-down active flag + intent delegation', async () => {
         const events = [];
         sidebar.addEventListener('intent-update', (e) => events.push(e.detail.patch));
-        // simulate clicking the 2nd item (it dispatches notelle-item-activate)
-        items[1].dispatchEvent(new CustomEvent('notelle-item-activate', {
+        // simulate clicking the 2nd item (it dispatches estreuv-sidebar-activate)
+        items[1].dispatchEvent(new CustomEvent('estreuv-sidebar-activate', {
             detail: { label: 'Archive' }, bubbles: true, composed: true,
         }));
         await sidebar.updateComplete;
@@ -77,11 +77,11 @@ describe('estreuv-notelle-sidebar (nested container + nested lifecycle)', () => 
         expect(items[1].active).toBe(true);          // prop-down
         expect(items[0].active).toBe(false);
         expect(items[2].active).toBe(false);
-        expect(events).toEqual([{ notelleActive: 'Archive' }]);
+        expect(events).toEqual([{ sidebarActive: 'Archive' }]);
     });
 
     it('sidebar.onShow restores collapsed/activeLabel from intent (re-visit picks latest)', async () => {
-        sidebar.intent = { notelleSidebarCollapsed: true, notelleActive: 'Trash' };
+        sidebar.intent = { sidebarCollapsed: true, sidebarActive: 'Trash' };
         sidebar.onShow();
         await sidebar.updateComplete;
         expect(sidebar.collapsed).toBe(true);

@@ -57,7 +57,7 @@ interface EstreIntent {
 ## Bundled components
 
 `estreuv/dark-mode-tile.js` · `estreuv/clock-tile.js` · `estreuv/notif-count-tile.js` ·
-`estreuv/notelle-sidebar.js` · `estreuv/notelle-item.js` — see [Tiles](/tiles).
+`estreuv/sidebar.js` · `estreuv/sidebar-item.js` — see [Tiles](/tiles).
 
 ::: info Generated from types
 This reference tracks the shipped `.d.ts`. A fully type-generated API site (typedoc) is a planned

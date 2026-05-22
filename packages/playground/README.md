@@ -99,7 +99,7 @@ tile.hasLifecycleFired('onShow'); // → true
 - [ ] (4) dedup 경고 출력
 - [ ] (5) 카운터/history 정상 노출
 - [ ] (Phase C tile 추가 시) 시계 tile · 알림 카운트 tile 도 동일 lifecycle 받음
-- [ ] (Phase C Notelle 시) 사이드바 nested 컨테이너 안의 항목도 lifecycle 받음 (중첩 dispatch)
+- [ ] nested 사이드바 nested 컨테이너 안의 항목도 lifecycle 받음 (중첩 dispatch)
 
 ## 산출물 보고
 
