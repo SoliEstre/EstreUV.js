@@ -16,7 +16,23 @@
  * - default empty intent shape
  */
 
-import { createContext, ContextProvider, ContextConsumer } from '@lit/context';
+import { createContext, ContextProvider, ContextConsumer, ContextRoot } from '@lit/context';
+
+/**
+ * 정적 consumer 가 provider 보다 *먼저* connect 하는 케이스 대비.
+ * EstreUI article 의 tile 들은 보통 article 이 onOpen 에서 provideIntent 하기 전에
+ * 이미 DOM 에 있어 context-request 를 먼저 쏜다. ContextRoot 는 미응답 request 를
+ * 버퍼링했다가 provider 가 나중에 등장하면 재전파한다. 첫 consumer 생성 시
+ * (connectedCallback 의 request 전) document 에 1회 부착.
+ */
+let _contextRoot = null;
+function ensureContextRoot() {
+    if (!_contextRoot && typeof document !== 'undefined' && document.body) {
+        _contextRoot = new ContextRoot();
+        _contextRoot.attach(document.body);
+    }
+    return _contextRoot;
+}
 
 /**
  * Intent context key. Lit context 시스템 안에서 EstreUI ↔ EstreUV 의 single channel.
@@ -37,7 +53,12 @@ export const intentContext = createContext(Symbol('estreuv:intent'));
  * @returns {{ provider: ContextProvider, update: (next: EstreIntent) => void }}
  */
 export function provideIntent(host, initial = {}) {
+    ensureContextRoot();
     const provider = new ContextProvider(host, { context: intentContext, initialValue: initial });
+    // plain element host 는 ReactiveElement 가 아니라 hostConnected 가 자동 호출되지 않음
+    // → context-provider 이벤트 미발신 → ContextRoot 가 먼저 온 consumer 의 request 를 재전파 못함.
+    // 수동 호출해 재전파 트리거 (이미 연결된 정적 consumer 들이 늦게 온 provider 에 붙음).
+    provider.hostConnected?.();
     return {
         provider,
         update(next) {
@@ -65,6 +86,9 @@ export function provideIntent(host, initial = {}) {
  * @returns {ContextConsumer}
  */
 export function consumeIntent(host, callback) {
+    // consumer 가 request 를 쏘기 전(생성자/connectedCallback 전)에 ContextRoot 부착 →
+    // provider 가 나중에 와도 재구독됨 (late-provider 안전).
+    ensureContextRoot();
     return new ContextConsumer(host, {
         context: intentContext,
         subscribe: true,

@@ -73,6 +73,24 @@ describe('intent-context', () => {
         expect(api.provider.value).toEqual({ step: 'home', darkMode: 'dark' });
     });
 
+    it('late provider: consumer connected BEFORE provideIntent still receives value (ContextRoot + hostConnected)', async () => {
+        // EstreUI 의 일반 케이스 — 정적 tile 이 article.onOpen 의 provideIntent 보다 먼저 connect.
+        let received = [];
+        class Consumer extends LitElement {
+            constructor() { super(); this._c = consumeIntent(this, (v) => received.push(v)); }
+            render() { return ''; }
+        }
+        if (!customElements.get('test-intent-consumer-late')) customElements.define('test-intent-consumer-late', Consumer);
+        const child = document.createElement('test-intent-consumer-late');
+        host.append(child);            // consumer 가 먼저 connect → context-request (provider 아직 없음)
+        await child.updateComplete;
+        // 이제 provider 를 LATE 부착 (article.onOpen 시점 모사)
+        const api = provideIntent(host, { step: 'home', counts: { Inbox: 3 } });
+        await child.updateComplete;
+        expect(api.provider.value).toEqual({ step: 'home', counts: { Inbox: 3 } });
+        expect(received[received.length - 1]).toEqual({ step: 'home', counts: { Inbox: 3 } });
+    });
+
     it('intentContext is a stable context key', () => {
         // @lit/context createContext(key) returns the key itself — here a unique Symbol
         expect(intentContext).toBeTruthy();
