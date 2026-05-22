@@ -6,11 +6,17 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev",
+    "docs:api": "typedoc",
+    "prebuild": "npm run docs:api",
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
   "devDependencies": {
     "entities": "^7.0.1",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.11.0",
+    "typedoc-vitepress-theme": "^1.1.2",
+    "typescript": "^6.0.3",
     "vitepress": "^1.6.3"
   }
 }

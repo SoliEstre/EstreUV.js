@@ -1,4 +1,17 @@
 import { defineConfig } from 'vitepress';
+import { createRequire } from 'node:module';
+
+// TypeDoc (typedoc-vitepress-theme) writes the API sidebar to
+// `typedoc-sidebar.json` at build time. It is a generated artifact (gitignored),
+// so load it defensively: a fresh checkout has no file until `npm run docs:api`
+// runs (wired into `prebuild`). Fall back to a single link when absent.
+const require = createRequire(import.meta.url);
+let apiSidebar = [{ text: 'API reference', link: '/api/' }];
+try {
+  apiSidebar = require('../api/typedoc-sidebar.json');
+} catch {
+  // not generated yet — keep the fallback
+}
 
 // EstreUV.js — standalone docs site. EstreUV-centric; references EstreUI
 // where the pairing matters. (EstreUI has its own site; EstreUX covers both.)
@@ -76,9 +89,7 @@ export default defineConfig({
           items: [{ text: 'Pairing with EstreUI', link: '/guide/pairing' }],
         },
       ],
-      '/api/': [
-        { text: 'API reference', link: '/api/' },
-      ],
+      '/api/': apiSidebar,
     },
 
     socialLinks: [
