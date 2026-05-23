@@ -4,7 +4,7 @@
 macro-Rimwork (jQuery class primitive). Build self-registering web components that drop into an EstreUI
 article and receive its lifecycle, or run fully standalone.
 
-> **0.1.0 — early access.** API stabilizing toward 1.0.0 GA. No build step. Lit core only.
+> **1.0.0 — GA.** Stable public API. No build step. Lit core only. 📖 [estre.nm3.kr/uv](https://estre.nm3.kr/uv/)
 
 ## Install
 
