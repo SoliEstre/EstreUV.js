@@ -21,6 +21,7 @@ export default defineConfig({
   lang: 'en-US',
   cleanUrls: true,
   lastUpdated: true,
+  base: '/uv/',   // estre.nm3.kr/uv 하위경로 배포 (생태계 docs 허브, 추후 /ui /ux /lle)
 
   // Treat <estreuv-*> as custom elements so Vue's compiler leaves them
   // intact (they upgrade client-side once registered in theme/index.js).
@@ -58,7 +59,7 @@ export default defineConfig({
       { text: 'Tiles', link: '/tiles' },
       { text: 'API', link: '/api/' },
       {
-        text: '0.2.0',
+        text: '1.0.0',
         items: [
           { text: 'npm', link: 'https://www.npmjs.com/package/estreuv' },
           { text: 'Changelog', link: 'https://github.com/SoliEstre/EstreUV.js/blob/main/packages/estreuv/CHANGELOG.md' },
