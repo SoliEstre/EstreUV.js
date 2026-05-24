@@ -12,7 +12,7 @@ article and inherit its lifecycle — or run fully standalone. No build step (Li
 
 EstreUV is the **micro** half of the Estre Rimwork pair: small, self-contained Lit custom elements
 ("tiles"). Its macro sister [EstreUI](https://github.com/SoliEstre/EstreUI.js) drives page/section
-layout (jQuery-class primitive); EstreUV drives the widgets inside. One [EstreUX](https://github.com/SoliEstre/EstreUX.js)
+layout (jQuery-class primitive); EstreUV drives the widgets inside. One [EstreUX](https://github.com/SoliEstre/EstreUX)
 `.eux` spec expands to both targets (γ-EstreUX-driven), so the same intent can render as a macro flow,
 a micro element, or a paired app.
 
@@ -74,7 +74,7 @@ context, and Alienese aliases, see the [package README](packages/estreuv/README.
 | --- | --- | --- |
 | **macro**-Rimwork | [estreui](https://github.com/SoliEstre/EstreUI.js) | page / section flow (jQuery-class primitive) |
 | **micro**-Rimwork | **estreuv** | widget elements (Lit-class primitive) — *this repo* |
-| **meta** layer | [EstreUX](https://github.com/SoliEstre/EstreUX.js) | `.eux` → expands to both (dev-time, runtime-free) |
+| **meta** layer | [EstreUX](https://github.com/SoliEstre/EstreUX) | `.eux` → expands to both (dev-time, runtime-free) |
 
 ## Monorepo layout
 
