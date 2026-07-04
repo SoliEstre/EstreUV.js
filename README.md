@@ -31,8 +31,8 @@ A component built on `EstreUVElement`:
   request changes *up* (no two-way binding race).
 - **Alienese aliases** — short attribute aliases (`*t`→`text`, `*c`→`color`, …) at zero build cost.
 - **Tiles** — ready-made `dark-mode` / `clock` / `notif-count` / `sidebar` elements, self-registering.
-- **No build** — `lit` / `@lit/context` peer-resolved via import map. ~689 LoC core · 4.31 KB min+gzip
-  (Lit external).
+- **No build** — `lit` / `@lit/context` peer-resolved via import map. ~727 LoC core · 4.55 KB min+gzip
+  (Lit external, measured 2026-07 via `scripts/measure-bundle.mjs`).
 
 ## Install
 
